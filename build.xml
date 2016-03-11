@@ -42,7 +42,8 @@
 	
 	<target name="2-compile" depends="1-clean" description="Compiles the source files">
 		<exec executable="${gradle.wrapper.executable}" dir=".">
-			<arg value="assembleDebug --offline" />
+			<arg value="--offline" />
+			<arg value="assembleDebug" />
 		</exec>
 	</target>
 
