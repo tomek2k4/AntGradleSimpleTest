@@ -1,0 +1,83 @@
+<!-- 
+# In general, compiles android driver
+# Tomasz Maslon <tmaslon@hidglobal.com>, July 2015
+-->
+<project name="MasterBuild" default="" basedir=".">
+
+	<property environment="env" />
+
+	<condition property="gradle.home.executable" value="${env.GRADLE_HOME}/bin/gradle.bat" else="${env.GRADLE_HOME}/bin/gradle">
+		<os family="windows" />
+	</condition>
+
+
+	<condition property="gradle.wrapper.executable" value="gradlew.bat" else="gradlew">
+		<os family="windows" />
+	</condition>
+	
+	<!--
+		Create Gradle Wrapper (requires gradle already installed on machine)
+		When you start a Gradle build via the wrapper, Gradle will be automatically downloaded and used to run the build.
+		This is great for people who don't have graddle pre-installed and for continuous integration environments.
+		http://www.gradle.org/docs/current/userguide/userguide_single.html#gradle_wrapper
+	 -->
+	<target name="build-wrapper" description="Builds the wrapper files, the preffered way to start a gradle build. The wrapper is a batch script on Windows, and a shell script for other operating systems.">
+		<exec executable="${gradle.home.executable}" dir=".">
+			<arg value="wrapper" />
+		</exec>
+	</target>
+	
+	
+	<!--
+		Build Lifecycle Tasks
+		List of 'java' gradle plugin tasks that can be run:
+		http://www.gradle.org/docs/current/userguide/userguide_single.html#java_plugin
+	-->
+
+	<target name="1-clean" description="Deletes the build directory.">
+		<exec executable="${gradle.wrapper.executable}" dir=".">
+			<arg value="clean" />
+		</exec>
+	</target>	
+	
+	<target name="2-compile" depends="1-clean" description="Compiles the source files">
+		<exec executable="${gradle.wrapper.executable}" dir=".">
+			<arg value="assembleDebug --offline" />
+		</exec>
+	</target>
+
+	<target name="3-test" depends="1-clean" description="Runs all unit tests">
+		<exec executable="${gradle.wrapper.executable}" dir=".">
+			<arg value="test" />
+		</exec>
+	</target>
+
+	<target name="4-dist" depends="1-clean" description="Assembles and tests this project.">
+		<exec executable="${gradle.wrapper.executable}" dir=".">
+			<arg value="build" />
+		</exec>
+	</target>
+
+	<!-- Informational Tasks -->
+
+	<target name="tasks-list" description="Lists all available gradle tasks that can be invoked">
+		<exec executable="${gradle.wrapper.executable}" dir=".">
+			<arg value="task" />
+			<arg value="--all" />
+		</exec>
+	</target>
+
+	<target name="dependencies-list" description="Lists the dependency tree to console">
+		<exec executable="${gradle.wrapper.executable}" dir=".">
+			<arg value="dependencies" />
+		</exec>
+	</target>
+
+	<target name="dependencies-report" description="Creates a text file report of the depdency tree">
+		<exec executable="${gradle.wrapper.executable}" dir=".">
+			<arg value="dependencyReport" />
+		</exec>
+		<echo message="Report written to ${basedir}\build\reports\project\dependencies.txt" />
+	</target>	
+	
+</project>
