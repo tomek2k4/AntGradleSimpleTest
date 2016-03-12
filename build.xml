@@ -11,7 +11,7 @@
 	</condition>
 
 
-	<condition property="gradle.wrapper.executable" value="gradlew.bat" else="gradlew">
+	<condition property="gradle.wrapper.executable" value="gradlew.bat" else="./gradlew">
 		<os family="windows" />
 	</condition>
 	
